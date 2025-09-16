@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Thank you for your order!</h1>
+<p>Your checkout was successful.</p>
+
+<script>
+  alert("Checkout complete! This proves the script runs.");
+  if (confirm("Would you like to leave feedback about your checkout experience?")) {
+    window.location.href = "{% url 'checkout_feedback' %}";
+  }
+</script>
+{% endblock %}

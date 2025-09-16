@@ -1,8 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404, redirect
 from movies.models import Movie
 from .utils import calculate_cart_total
-from .models import Order, Item
+from .forms import CheckoutFeedbackForm
+from .models import Order, Item, CheckoutFeedback
 from django.contrib.auth.decorators import login_required
 
 def index(request):
@@ -57,3 +58,17 @@ def purchase(request):
     return render(request, 'cart/purchase.html',
         {'template_data': template_data})
 
+def checkout_feedback(request):
+    if request.method == "POST":
+        form = CheckoutFeedbackForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("feedback_list")  # redirect to view all feedback
+    else:
+        form = CheckoutFeedbackForm()
+    return render(request, "cart/checkout_feedback.html", {"form": form})
+
+
+def feedback_list(request):
+    feedbacks = CheckoutFeedback.objects.order_by("-created_at")
+    return render(request, "cart/feedback_list.html", {"feedbacks": feedbacks})
